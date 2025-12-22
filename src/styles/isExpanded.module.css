@@ -1,0 +1,21 @@
+.isInOut {
+    transition-property: width;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); 
+    overflow-x: hidden;
+    white-space: nowrap; 
+}
+
+.opacityControl {
+    transition-property: opacity;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 3. 텍스트 숨김/보임 상태 정의 */
+.textHidden {
+    opacity: 0;
+}
+.textVisible {
+    opacity: 1;
+}
