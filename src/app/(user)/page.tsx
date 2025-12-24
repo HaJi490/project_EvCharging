@@ -1,9 +1,18 @@
 import React from 'react'
 
+import StationSearchMap from '@/components/User/Map/StationSearchMap'
+import StationListPanel from '@/components/User/Panel/StationListPanel'
+
 export default function page() {
   return (
-    <div>
-      랜딩페이지
+    <div className='w-full h-screen flex'>
+      
+      <div className='w-96 h-full'>
+        <StationListPanel />
+      </div>
+      <div className='h-full flex-1 '>
+        <StationSearchMap /> 
+      </div>
     </div>
   )
 }

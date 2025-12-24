@@ -21,8 +21,8 @@ export default function UserNav() {
         <ul className='flex gap-10'> 
           <NavItem href={'/company'}>회사소개</NavItem>
           <NavItem href={'/guide'}>이용안내</NavItem>
-          <NavItem href={'/'}>충전소 검색</NavItem>
-          <NavItem href={'/route'}>목적지 탐색</NavItem>
+          <NavItem href={'/'}>충전소 현황</NavItem>
+          <NavItem href={'/route'}>최적 경로</NavItem>
         </ul>
 
         {/* NavItem 모음만들기 -> 역할분담 */}
