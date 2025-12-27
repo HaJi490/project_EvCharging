@@ -3,7 +3,13 @@
 import { useState, useMemo } from 'react';
 import Map, { ViewStateChangeEvent } from 'react-map-gl/mapbox';
 
-export default function StationSearchMap() {
+import { StationMarkerDto } from '@/types/station';
+
+interface StationSearchMap {
+  markers: StationMarkerDto[]
+}
+
+export default function StationSearchMap({markers}: StationSearchMap) {
     const [ viewState, setViewState ] = useState({
         longitude: 129.06, // 부산시청
         latitude: 35.18,

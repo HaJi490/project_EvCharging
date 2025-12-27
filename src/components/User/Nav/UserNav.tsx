@@ -8,7 +8,7 @@ import AuthBtn from './Items/AuthBtn'
 export default function UserNav() {
   return (
     <nav className='w-full h-20 border border-b border-gray-200 flex items-center justify-center'>
-      <div className='w-full max-w-screen-xl px-4 md:px-8 lg:px-12 flex items-center justify-between '>
+      <div className='w-full max-w-screen-2xl px-4 md:px-8 lg:px-12 flex items-center justify-between '>
         <Link href='/'>
           <Image className="dark:invert "
               src="/next.svg"

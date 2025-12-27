@@ -1,6 +1,6 @@
 import React from 'react'
 
-import StationSearchMap from '@/components/User/Map/StationSearchMap'
+import StationSearchMap from '@/components/pages/search/StationSearchMap'
 
 export default function page() {
   return (
