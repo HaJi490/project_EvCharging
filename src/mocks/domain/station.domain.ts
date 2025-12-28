@@ -6,7 +6,7 @@ import {
 } from '@/types/station';
 
 export function getStaions() {
-    const stations = rawData as unknown as StationRaw[]; //? as inknown as
+    const stations = rawData as unknown as StationRaw[];
 
     const markers: StationMarkerDto[] = stations.map(stat => ({
         statId: stat.statId,
@@ -38,6 +38,6 @@ export function getStaions() {
 
     return {
         markers,
-        list, //? 왜 station으로 한번더 감쌈?>
+        list,
     }
 }

@@ -1,4 +1,6 @@
-import React from 'react'
+'use client'
+
+import { useState } from 'react'
 
 import StationListPanel from './StationListPanel'
 import StationSearchMap from './StationSearchMap'
@@ -9,13 +11,16 @@ interface SearchPageClientProps {
 }
 
 export default function SearchPageClient({data}: SearchPageClientProps) {
+    const [selectedId, setSelectedId] = useState<string|null>(null);
+
     return (
         <div className='w-full h-screen flex'>
             <div className='w-96 h-full'>
                 <StationListPanel list={data.list} />
             </div>
             <div className='h-full flex-1 '>
-                <StationSearchMap markers={data.markers} />
+                <StationSearchMap markers={data.markers}
+                                    selectedId = {selectedId}/>
             </div>
         </div>
     )

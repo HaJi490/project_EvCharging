@@ -1,22 +1,36 @@
 'use client'
 
-import { useState, useMemo } from 'react';
-import Map, { ViewStateChangeEvent } from 'react-map-gl/mapbox';
+import { useState, useEffect } from 'react';
+import Map, { Marker, ViewStateChangeEvent } from 'react-map-gl/mapbox';
 
 import { StationMarkerDto } from '@/types/station';
 
 interface StationSearchMap {
-  markers: StationMarkerDto[]
+  markers: StationMarkerDto[],
+  selectedId: string | null,
 }
 
-export default function StationSearchMap({markers}: StationSearchMap) {
-    const [ viewState, setViewState ] = useState({
-        longitude: 129.06, // 부산시청
-        latitude: 35.18,
-        zoom: 13,
-    }); 
+export default function StationSearchMap({markers, selectedId}: StationSearchMap) {
+  const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+  
+  const [ viewState, setViewState ] = useState({
+      // longitude: 129.06, // 부산시청
+      // latitude: 35.18,
+      longitude: 129.094, // 금정구 중심
+      latitude: 35.240,
+      zoom: 13,
+  }); 
 
-    const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+  useEffect(() => {
+  if (!selectedId) return;
+
+  setViewState((prev) => ({
+    ...prev,
+    longitude: selectedStation.lng,
+    latitude: selectedStation.lat,
+  }))
+}, [selectedId])
+
 
   return (
     <div className='w-full h-full'>
@@ -25,7 +39,18 @@ export default function StationSearchMap({markers}: StationSearchMap) {
             mapStyle='mapbox://styles/mapbox/light-v11'
             style={{width: '100%', height: '100%'}}
             onMove={(evt: ViewStateChangeEvent) => setViewState(evt.viewState)} // 지도 이동 이벤트 처리
-        />
+        >
+            {markers.map(stat => {
+              const isSelected = stat.statId === selectedId;
+
+              return (<Marker key={stat.statId}
+                      longitude={stat.lng}
+                      latitude={stat.lat}
+                      anchor='bottom'>
+                <div className={`w-4 h-4 rounded-full ${isSelected? 'bg-main scale-125'  : 'bg-blue-500'} border border-white`} />
+              </Marker>)
+            })}
+        </Map>
     </div>
   )
 }
