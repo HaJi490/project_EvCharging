@@ -7,10 +7,15 @@ import { StationMarkerDto } from '@/types/station';
 
 interface StationSearchMap {
   markers: StationMarkerDto[],
-  selectedId: string | null,
+  selectedStatId: string | null,
+  onSelected: (statId: string) => void
 }
 
-export default function StationSearchMap({markers, selectedId}: StationSearchMap) {
+export default function StationSearchMap({
+  markers, 
+  selectedStatId,
+  onSelected
+}: StationSearchMap) {
   const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
   
   const [ viewState, setViewState ] = useState({
@@ -21,15 +26,15 @@ export default function StationSearchMap({markers, selectedId}: StationSearchMap
       zoom: 13,
   }); 
 
-  useEffect(() => {
-  if (!selectedId) return;
+//   useEffect(() => {
+//   if (!selectedId) return;
 
-  setViewState((prev) => ({
-    ...prev,
-    longitude: selectedStation.lng,
-    latitude: selectedStation.lat,
-  }))
-}, [selectedId])
+//   setViewState((prev) => ({
+//     ...prev,
+//     longitude: selectedStation.lng,
+//     latitude: selectedStation.lat,
+//   }))
+// }, [selectedId])
 
 
   return (
@@ -41,14 +46,19 @@ export default function StationSearchMap({markers, selectedId}: StationSearchMap
             onMove={(evt: ViewStateChangeEvent) => setViewState(evt.viewState)} // 지도 이동 이벤트 처리
         >
             {markers.map(stat => {
-              const isSelected = stat.statId === selectedId;
+              const isSelected = stat.statId === selectedStatId;
 
-              return (<Marker key={stat.statId}
-                      longitude={stat.lng}
-                      latitude={stat.lat}
-                      anchor='bottom'>
-                <div className={`w-4 h-4 rounded-full ${isSelected? 'bg-main scale-125'  : 'bg-blue-500'} border border-white`} />
-              </Marker>)
+              return (
+                <Marker 
+                  key={stat.statId}
+                  longitude={stat.lng}
+                  latitude={stat.lat}
+                  anchor='bottom'
+                >
+                  <div className={`w-4 h-4 rounded-full ${isSelected? 'bg-main scale-125'  : 'bg-blue-500'} border border-white`}
+                        onClick={() => onSelected(stat.statId)}/>
+                </Marker>
+              )
             })}
         </Map>
     </div>

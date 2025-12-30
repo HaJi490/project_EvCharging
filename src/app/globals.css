@@ -34,6 +34,15 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@layer utilities {
+  .scrollbar-hide {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    scrollbar-width: none;
+  }
+}
+
 .icon {
   /* 기본적으로 모든 아이콘에 적용될 크기 */
   font-size: 1.25rem; /* 20px */
