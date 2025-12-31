@@ -1,5 +1,3 @@
-
-
 // 기본 / 마커표시 (Minimal DTO)
 export interface StationMarkerDto {
     statId: string;
@@ -28,3 +26,4 @@ export interface StationResponse {
     markers: StationMarkerDto[];
     list: StationListDto[];
 }
+

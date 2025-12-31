@@ -55,7 +55,7 @@ export default function StationSearchMap({
                   latitude={stat.lat}
                   anchor='bottom'
                 >
-                  <div className={`w-4 h-4 rounded-full ${isSelected? 'bg-main scale-125'  : 'bg-blue-500'} border border-white`}
+                  <div className={`w-3 h-3 rounded-full ${isSelected? 'bg-red-600 scale-125'  : 'bg-main'} border border-white`}
                         onClick={() => onSelected(stat.statId)}/>
                 </Marker>
               )

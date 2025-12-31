@@ -20,7 +20,7 @@ export default function SearchPageClient({data}: SearchPageClientProps) {
         return data.list.find(
             stat => stat.statId === selectedStatId
         ) ?? null
-    }, [selectedStatId, data.list])
+    }, [selectedStatId, data.list]);
 
     return (
         <div className='w-full h-full flex'>
@@ -38,8 +38,11 @@ export default function SearchPageClient({data}: SearchPageClientProps) {
                     onSelected = {setSelectedStatId}
                 />
                 {selectedStatId && (
-                    <div className='absolute left-4 top-5 w-86 h-180 bg-white shadow-lg rounded-xl'>
-                        <StationDetailPanel statId={selectedStatId}/>
+                    <div className='absolute left-4 top-5 w-96 h-190 bg-white shadow-lg rounded-xl'>
+                        <StationDetailPanel 
+                            statId={selectedStatId}
+                            station ={selectedStation}
+                        />
                     </div>
                 )}
             </main>

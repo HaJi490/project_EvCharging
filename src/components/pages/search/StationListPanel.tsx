@@ -17,11 +17,11 @@ export default function StationListPanel({
   onSelected
 }:StationListProps) {
   return (
-    <div className='w-full h-full bg-gray-50 flex-shrink-0'>
-        <div className='w-full h-16 border-b border-gray-200'>
+    <div className='w-full h-full flex-shrink-0 flex flex-col bg-gray-50'>
+        <div className='w-full h-16 flex-shrink-0 border-b border-gray-200 '>
             <StationSearch />
         </div>
-        <ul className='h-full overflow-y-auto scrollbar-hide'>
+        <ul className='flex-1 overflow-y-auto scrollbar-hide scroll-pt-4'>
             {/* <StationList 
               list={list}
               selectedStatId={selectedStatId}

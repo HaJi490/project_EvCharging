@@ -44,10 +44,14 @@ body {
 }
 
 .icon {
-  /* 기본적으로 모든 아이콘에 적용될 크기 */
   font-size: 1.25rem; /* 20px */
   /* 텍스트와 아이콘을 수직으로 중앙 정렬 */
   vertical-align: middle; 
   /* 아이콘과 옆 텍스트 사이의 기본 간격 */
   /* margin-right: 0.25rem;  */
+}
+
+.icon svg {
+  width: 20px;
+  height: 20px;
 }
