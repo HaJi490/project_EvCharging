@@ -1,3 +1,12 @@
+export interface StationQueryParams {
+    lat: number;
+    lng: number;
+    radius: number;
+    canUse?: boolean;
+    parkingFree?: boolean;
+    isOpen?: boolean;
+}
+
 // 기본 / 마커표시 (Minimal DTO)
 export interface StationMarkerDto {
     statId: string;

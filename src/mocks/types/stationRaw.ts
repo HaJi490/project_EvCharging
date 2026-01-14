@@ -1,4 +1,5 @@
 // 원본 API 데이터 (mock json 기준)
+// 충전기
 export interface ChargerInfoRaw {
     statNm: string;
     statId: string;
@@ -31,6 +32,7 @@ export interface ChargerInfoRaw {
     minuteEv: number;
 }
 
+// 충전소
 export interface StationRaw {
     statNm: string;
     statId: string;
