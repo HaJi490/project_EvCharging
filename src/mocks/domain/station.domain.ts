@@ -5,7 +5,7 @@ import {
     StationListDto,
 } from '@/types/station';
 
-export function getStaions() {
+export function getStations() {
     const stations = rawData as unknown as StationRaw[];
 
     const markers: StationMarkerDto[] = stations.map(stat => ({

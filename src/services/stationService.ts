@@ -2,27 +2,31 @@
 import { ApiResponse } from "@/types/api";
 import { StationResponse } from "@/types/station";
 
-interface fetchStationsProps {
+interface fetchStationsParams {
     lat: number
     lng: number
     radius: number
     canUse: boolean
     parkingFree: boolean
-    open: boolean
+    isOpen: boolean
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
 
-export async function fetchStations({
-    lat, lng, radius, canUse, parkingFree, open
-}: fetchStationsProps)
-: Promise<ApiResponse<StationResponse>> {
-        const param = `?lat=${lat}&lng=${lng}&radius=${radius}
-                        &canUse=${canUse}&parkingFree=${parkingFree}&open=${open}`
-        const res = await fetch(`${baseUrl}/api/stations${param}`, {
+export async function fetchStations( params: fetchStationsParams ) :Promise<ApiResponse<StationResponse>> {
+        const query = new URLSearchParams({
+            lat: String(params.lat),
+            lng: String(params.lng),
+            radius: String(params.radius),
+            canUse: String(params.canUse),
+            parkingFree: String(params.parkingFree),
+            isOpen: String(params.isOpen),
+        }).toString();
+
+
+        const res = await fetch(`${baseUrl}/api/stations${query}`, {
             cache: 'no-store',
         });
         
-        const data = res.json();
-        return data;
+        return res.json();
 }

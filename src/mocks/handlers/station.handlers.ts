@@ -1,7 +1,7 @@
 import { http, HttpHandler } from 'msw';
 import { createSuccessResp } from '../response/createSuccfessResp';
 import { createErrorResp } from '../response/createErrorResp';
-import { getStaions } from '../domain/station.domain';
+import { getStations } from '../domain/station.domain';
 
 const statHandlers: HttpHandler[] = [ //FIXME 타입설정
     // 충전소 정보
@@ -16,7 +16,7 @@ const statHandlers: HttpHandler[] = [ //FIXME 타입설정
             return createErrorResp('UNAUTHORIZED');
         }
         
-        return createSuccessResp(getStaions());
+        return createSuccessResp(getStations());
     }),
 
 ]
