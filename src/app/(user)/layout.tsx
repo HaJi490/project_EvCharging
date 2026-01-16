@@ -1,5 +1,5 @@
 import React from 'react'
-import UserNav from "@/components/User/Nav/UserNav";
+import UserNav from "@/components/common/Nav/UserNav";
 
 export default function layout({children}: {children: React.ReactNode}) {
   return (

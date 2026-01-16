@@ -1,15 +1,32 @@
-import rawData from '@/mocks/data/fetchStations.json';
-import { StationRaw } from '@/mocks/types/stationRaw';
+import { StationRaw } from '@/types/station';
 
 export class StationRepository {
     private data: StationRaw[];
+    private cache = new Map<string, any>();
 
     constructor() {
-        this.data = rawData as unknown as StationRaw[];
+        this.data = require('@/server/data/fetchStations.json');
+        console.log(`📦 Repository 초기화: ${this.data.length}개 충전소 로드`);
     }
     
     findAll(): StationRaw[] {
         return this.data;
+    }
+
+    findById(id: string): StationRaw | undefined {
+        const cacheKey = `station:${id}`
+
+        if (this.cache.has(cacheKey)) {
+            return this.cache.get(cacheKey);
+        }
+
+        const station = this.data.find(s => s.statId === id);
+
+        if (station) {
+            this.cache.set(cacheKey, station);
+        }
+
+        return station;
     }
 
     findByArea(lat: number, lng: number, radius: number): StationRaw[] {
@@ -39,5 +56,9 @@ export class StationRepository {
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
         return R * c; // 미터 단위
+    }
+
+    clearCache(): void {
+        this.cache.clear();
     }
 }

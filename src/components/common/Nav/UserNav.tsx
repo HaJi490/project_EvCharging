@@ -2,8 +2,8 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import NavItem from './Items/NavItem'
-import AuthBtn from './Items/AuthBtn'
+import NavItem from './UserItems/NavItem'
+import AuthBtn from './UserItems/AuthBtn'
 
 export default function UserNav() {
   return (

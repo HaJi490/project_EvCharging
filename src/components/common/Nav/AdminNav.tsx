@@ -4,7 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useState } from 'react'
 
-import NavMenu from './Items/NavMenu'
+import NavMenu from './AdminItems/NavMenu'
 import style from '@/styles/isExpanded.module.css'
 
 export default function AdminNav() {

@@ -1,5 +1,5 @@
 import React from 'react'
-import AdminNav from '@/components/Admin/Nav/AdminNav'
+import AdminNav from '@/components/common/Nav/AdminNav'
 
 export default function layout({ children }: { children: React.ReactNode }) {
     return (

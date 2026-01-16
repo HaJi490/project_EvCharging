@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-import MSWComponent from '@/mocks/MSWComponent';
+// import MSWComponent from '@/mocks/MSWComponent';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,9 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <MSWComponent>
+        {/* <MSWComponent> */}
           {children}
-        </MSWComponent>
+        {/* </MSWComponent> */}
       </body>
     </html>
   );
