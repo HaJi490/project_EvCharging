@@ -20,12 +20,14 @@ export async function GET(req: NextRequest){
         return NextResponse.json({
             success: true,
             data,
+            message: 'OK',
         })
     } catch(error) {
         return NextResponse.json(
             {
                 success: false,
-                error: '충전소 데이터를 불러올 수 없습니다.'
+                error: error instanceof Error ? error.message : '서버 오류',
+                data: null,
             },
             {status: 500}
         );

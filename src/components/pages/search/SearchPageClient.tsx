@@ -10,6 +10,7 @@ import {
     StationListDto,
     StationQueryParams,
 } from '@/types/station'
+import { stationApiClient } from '@/lib/api-client/station-client'
 
 interface SearchPageClientProps {
     initialData: StationResponse;
@@ -20,25 +21,42 @@ export default function SearchPageClient({initialData, initialParams}: SearchPag
     const [data, setData] = useState(initialData);
     const [params, setParams] = useState(initialParams);
     const [selectedStatId, setSelectedStatId] = useState<string|null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     // 필터 변경 시 클라이언트 재요청
     const handleFilterChange = async (newParams: StationQueryParams) => {
-        const query = new URLSearchParams({
-            lat: String(newParams.lat),
-            lng: String(newParams.lng),
-            radius: String(newParams.radius),
-            canUse: String(newParams.canUse),
-            parkingFree: String(newParams.parkingFree),
-            isOpen: String(newParams.isOpen),
-        });
+        setIsLoading(true);
 
-        const res = await fetch(`/api/stations?${query}`);
-        const result = await res.json;
+        try{
+            // 동일한 API Client 사용(자동으로 http 요청됨)
+            const newData = await stationApiClient.getStations(newParams);
 
-        if (result.success) {   //FIXME api/stations/route.ts
-            setData(result.data);
+            setData(newData);
             setParams(newParams);
-        }
+        } catch(error) {
+            console.error('Failed to fetch stations: ', error);
+            // FIXME 에러처리
+        } finally {
+            setIsLoading(false);
+        };
+
+        
+    //     const query = new URLSearchParams({
+    //         lat: String(newParams.lat),
+    //         lng: String(newParams.lng),
+    //         radius: String(newParams.radius),
+    //         canUse: String(newParams.canUse),
+    //         parkingFree: String(newParams.parkingFree),
+    //         isOpen: String(newParams.isOpen),
+    //     });
+
+    //     const res = await fetch(`/api/stations?${query}`);
+    //     const result = await res.json;
+
+    //     if (result.success) {   //FIXME api/stations/route.ts
+    //         setData(result.data);
+    //         setParams(newParams);
+    //     }
     }
 
     // 선택된 충전소 변경시
@@ -60,6 +78,19 @@ export default function SearchPageClient({initialData, initialParams}: SearchPag
                 />
             </aside>
             <main className='relative h-full flex-1'>
+                {/* 필터 UI 예시 */}
+                <div className="p-4 border-b">
+                <button
+                    onClick={() => handleFilterChange({ 
+                    ...params, 
+                    parkingFree: !params.parkingFree 
+                    })}
+                    disabled={isLoading}
+                    className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+                >
+                    {isLoading ? '로딩 중...' : '무료 주차만 보기'}
+                </button>
+                </div>
                 <StationSearchMap 
                     markers={data.markers}
                     selectedStatId = {selectedStatId}

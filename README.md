@@ -15,3 +15,25 @@
    - Next.js의 서버 컴포넌트 장점 활용
    - 불필요한 네트워크 오버헤드 제거
    - 초기 로딩 성능 최적화
+
+/**
+ * ## API 통신 구조
+ * 
+ * ### 개발 환경 (현재)
+ * ```
+ * SSR: Page → StationApiClient → domain 직접 호출 (최적화)
+ * CSR: Component → StationApiClient → /api/stations → domain
+ * ```
+ * 
+ * ### 프로덕션 (백엔드 분리 시)
+ * ```
+ * SSR: Page → StationApiClient → https://api.backend.com
+ * CSR: Component → StationApiClient → https://api.backend.com
+ * ```
+ * 
+ * ### 장점
+ * 1. **환경변수 하나만 변경**으로 백엔드 전환 가능
+ * 2. **SSR 최적화**: 개발 중에는 불필요한 HTTP 요청 없음
+ * 3. **일관된 인터페이스**: 코드 수정 없이 백엔드 교체
+ * 4. **실무 패턴**: Repository → Service → API Client 계층 구조
+ */

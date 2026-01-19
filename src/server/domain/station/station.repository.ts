@@ -5,7 +5,7 @@ export class StationRepository {
     private cache = new Map<string, any>();
 
     constructor() {
-        this.data = require('@/server/data/fetchStations.json');
+        this.data = require('@/server/data/statsDB.json');
         console.log(`📦 Repository 초기화: ${this.data.length}개 충전소 로드`);
     }
     

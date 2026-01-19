@@ -1,8 +1,8 @@
 import React from 'react'
 
-import StationSearch from './Panel/StationSearch'
+import StationSearch from './List/StationSearch'
 // import StationList from './Panel/StationList' 삭제해도 될듯
-import StationItem from './Panel/StationItem'
+import StationItem from './List/StationItem'
 import { StationListDto } from '@/types/station'
 
 interface StationListProps {
