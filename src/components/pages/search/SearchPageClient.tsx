@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 
 import StationListPanel from './StationListPanel'
 import StationSearchMap from './StationSearchMap'
@@ -19,45 +19,53 @@ interface SearchPageClientProps {
 
 export default function SearchPageClient({initialData, initialParams}: SearchPageClientProps) {
     const [data, setData] = useState(initialData);
-    const [params, setParams] = useState(initialParams);
+    const [currentParams, setCurrentParams] = useState(initialParams);
     const [selectedStatId, setSelectedStatId] = useState<string|null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    // 필터 변경 시 클라이언트 재요청
-    const handleFilterChange = async (newParams: StationQueryParams) => {
+    // 충전소 정보 요청
+    const fetchStations = useCallback(async (newParams: StationQueryParams) => {
         setIsLoading(true);
+        console.log('api요청 필터: ', newParams);
 
         try{
             // 동일한 API Client 사용(자동으로 http 요청됨)
             const newData = await stationApiClient.getStations(newParams);
 
+            console.log(newData);
             setData(newData);
-            setParams(newParams);
+            setCurrentParams(newParams);
         } catch(error) {
             console.error('Failed to fetch stations: ', error);
+            alert('충전소 정보를 불러오는 데 실패했습니다.');
             // FIXME 에러처리
         } finally {
             setIsLoading(false);
         };
+    }, []);
 
-        
-    //     const query = new URLSearchParams({
-    //         lat: String(newParams.lat),
-    //         lng: String(newParams.lng),
-    //         radius: String(newParams.radius),
-    //         canUse: String(newParams.canUse),
-    //         parkingFree: String(newParams.parkingFree),
-    //         isOpen: String(newParams.isOpen),
-    //     });
+    // 필터 변경(위치는 유지)
+    const handleFilterChange = useCallback((
+        newFilter: Partial<Pick<StationQueryParams, 'canUse' | 'parkingFree' | 'isOpen' | 'radius'>>
+    ) => {
+        const newParams: StationQueryParams = {
+            ...currentParams,
+            ...newFilter,
+        };
 
-    //     const res = await fetch(`/api/stations?${query}`);
-    //     const result = await res.json;
+        fetchStations(newParams);
+    }, [currentParams, fetchStations]);
 
-    //     if (result.success) {   //FIXME api/stations/route.ts
-    //         setData(result.data);
-    //         setParams(newParams);
-    //     }
-    }
+    // 위치만 변경 (필터는 유지)
+    const handleLocationChange = useCallback((lat: number, lng: number) => {
+        const newParams: StationQueryParams = {
+            ... currentParams,
+            lat,
+            lng,
+        }
+
+        fetchStations(newParams);
+    }, [currentParams, fetchStations])
 
     // 선택된 충전소 변경시
     const selectedStation: StationListDto | null = useMemo(() => {
@@ -75,26 +83,33 @@ export default function SearchPageClient({initialData, initialParams}: SearchPag
                     list={data.list}
                     selectedStatId ={selectedStatId}
                     onSelected = {setSelectedStatId}
+                    onFilterChange={handleFilterChange}
+                    currentFilter={currentParams}
+                    isLoading={isLoading}
                 />
             </aside>
             <main className='relative h-full flex-1'>
                 {/* 필터 UI 예시 */}
-                <div className="p-4 border-b">
+                {/* <div className="p-4 border-b">
                 <button
                     onClick={() => handleFilterChange({ 
-                    ...params, 
-                    parkingFree: !params.parkingFree 
+                    ...currentParams, 
+                    parkingFree: !currentParams.parkingFree 
                     })}
                     disabled={isLoading}
                     className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
                 >
                     {isLoading ? '로딩 중...' : '무료 주차만 보기'}
                 </button>
-                </div>
+                </div> */}
                 <StationSearchMap 
                     markers={data.markers}
                     selectedStatId = {selectedStatId}
                     onSelected = {setSelectedStatId}
+                    // onLocationChange={handleLocationChange}
+                    // currentLat={currentParams.lat}
+                    // currentLng={currentParams.lng}
+                    // isLoading={isLoading}
                 />
                 {selectedStatId && (
                     <div className='absolute left-4 top-5 w-96 h-190 bg-white shadow-lg rounded-xl'>
