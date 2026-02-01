@@ -1,9 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 
+import { TAB_MENU, CHARGING_COMPANY, RANGE } from '@/constants/filter'
+import FilterSectionWrapper from './FilterSections/FilterSectionWrapper'
+import ChargerCompSelection from './FilterSections/ChargerCompSelection'
+import ToggleButtonGroup from './FilterSections/ToggleButtonGroup'
 import { StationQueryParams } from '@/types/station'
 import { X } from 'lucide-react'
+import ToggleBadge from '@/components/ui/ToggleBadge'
 
 interface StationFilterProps {
     isOpen: boolean
@@ -19,11 +24,41 @@ export default function FilterModal({
     currentFilter
 }: StationFilterProps) {
     const [localFilters, setLocalFilters] = useState<Partial<Pick<StationQueryParams, 'canUse' | 'parkingFree' | 'isOpen' | 'radius'>>>({
-        canUse: currentFilter.canUse,
-        parkingFree: currentFilter.parkingFree,
-        isOpen: currentFilter.isOpen,
-        radius: currentFilter.radius,
+        canUse: currentFilter.canUse ?? false,
+        parkingFree: currentFilter.parkingFree ?? false,
+        isOpen: currentFilter.isOpen ?? false,
+        radius: currentFilter.radius ?? 1000,
     });
+    const [activeTab, setActiveTab] = useState<string>('속성');
+    // 1. Ref Array 선언: 모든 DOM 노드를 저장할 하나의 Map 객체를 사용
+    const sectionRef = useRef<Map<string, HTMLDivElement>>(new Map());
+
+    // 2. Ref 설정 함수: 렌더링 시 DOM 노드를 Map에 추가하는 함수
+    const setRef = (id: string, node: HTMLDivElement|null) => {
+        if(node) {
+            sectionRef.current.set(id, node);
+        } else {
+            sectionRef.current.delete(id);
+        }
+    };
+
+    // 탭메뉴 클릭 핸들러
+    const handleTabClick = (tabName: string) => {
+        setActiveTab(tabName);
+        const element = sectionRef.current.get(tabName);
+        if(element) {
+            element.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+    }
+
+    const handleLocalPropToggle = (key: 'canUse' | 'parkingFree' | 'isOpen') => {
+        setLocalFilters(prev => ({
+            ...prev,
+            // ⭐️ 전달된 key의 값만 토글
+            [key]: !prev[key], 
+        }));
+    };
+
 
     useEffect(() => {
         if(isOpen) {
@@ -59,93 +94,69 @@ export default function FilterModal({
         <>
             {/* 배경 오버레이 */}
             <div 
-                className="fixed inset-0 bg-black/50 z-40"
+                className="fixed inset-0 z-40 bg-black/50"
                 onClick={onClose}
             />
 
             {/* 모달 */}
-            <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-                <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
+            <div className="fixed inset-0 z-50 p-4 
+                            flex items-center justify-center "
+            >
+                <div className="w-full max-w-md p-6 bg-white rounded-2xl shadow-xl 
+                                flex flex-col gap-5"
+                >
                     {/* 헤더 */}
-                    <div className="flex items-center justify-between p-6 border-b">
+                    <div className="flex items-center justify-between  ">
                         <h2 className="text-xl font-bold">필터</h2>
                         <button 
                             onClick={onClose}
-                            className="p-1 hover:bg-gray-100 rounded-full transition"
+                            className="p-1 hover:bg-gray-100 rounded-full transition cursor-pointer"
                         >
                             <X className="w-6 h-6" />
                         </button>
                     </div>
 
+                    {/* 탭메뉴 */}
+                    <div className='sticky flex gap-2 pb-3 border-b border-gray-400'>
+                        {TAB_MENU.map(item => (
+                            <button key={item.value}
+                                    className={`font-bold text-gray-400 cursor-pointer ${activeTab === item.value && 'text-main'}`}
+                                    onClick={() => handleTabClick(item.value)}
+                            >
+                                {item.value}
+                            </button>
+                        ))}
+                    </div>
+
                     {/* 본문 */}
-                    <div className="p-6 space-y-6">
-                        {/* 검색 반경 */}
-                        <div>
-                            <label className="block text-sm font-medium mb-2">
-                                검색 반경: {localFilters.radius}m
-                            </label>
-                            <input
-                                type="range"
-                                min="500"
-                                max="5000"
-                                step="100"
-                                value={localFilters.radius}
-                                onChange={(e) => setLocalFilters({
-                                    ...localFilters,
-                                    radius: Number(e.target.value)
-                                })}
-                                className="w-full"
-                            />
-                            <div className="flex justify-between text-xs text-gray-500 mt-1">
-                                <span>500m</span>
-                                <span>5km</span>
+                    <div className='flex-1 overflow-y-auto pr-1'>
+                        <FilterSectionWrapper id='속성' title='속성' setRef={setRef}>
+                            <div className='flex gap-2'>
+                                <ToggleBadge label='충전가능'
+                                            isActive={localFilters.canUse}
+                                            onClick={()=>handleLocalPropToggle('canUse')}
+                                />
+                                <ToggleBadge label='개방'
+                                            isActive={localFilters.isOpen}
+                                            onClick={()=>handleLocalPropToggle('isOpen')}
+                                />
+                                <ToggleBadge label='무료주차'
+                                            isActive={localFilters.parkingFree}
+                                            onClick={()=>handleLocalPropToggle('parkingFree')}
+                                />
                             </div>
-                        </div>
-
-                        {/* 토글 필터들 */}
-                        <div className="space-y-3">
-                            {/* 사용 가능 */}
-                            <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
-                                <span className="font-medium">사용 가능한 충전소만</span>
-                                <input
-                                    type="checkbox"
-                                    checked={localFilters.canUse}
-                                    onChange={(e) => setLocalFilters({
-                                        ...localFilters,
-                                        canUse: e.target.checked
-                                    })}
-                                    className="w-5 h-5 text-blue-600"
+                        </FilterSectionWrapper>
+                        <FilterSectionWrapper id='탐색반경' title='탐색반경' setRef={setRef}>
+                            {RANGE.map(item => (
+                                <ToggleBadge key={item.value} 
+                                            label={item.value}
+                                            isActive={localFilters.radius === item.value}
+                                            onClick={}
                                 />
-                            </label>
+                            ))
 
-                            {/* 무료 주차 */}
-                            <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
-                                <span className="font-medium">무료 주차 가능</span>
-                                <input
-                                    type="checkbox"
-                                    checked={localFilters.parkingFree}
-                                    onChange={(e) => setLocalFilters({
-                                        ...localFilters,
-                                        parkingFree: e.target.checked
-                                    })}
-                                    className="w-5 h-5 text-blue-600"
-                                />
-                            </label>
-
-                            {/* 운영 중 */}
-                            <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
-                                <span className="font-medium">현재 운영 중</span>
-                                <input
-                                    type="checkbox"
-                                    checked={localFilters.isOpen}
-                                    onChange={(e) => setLocalFilters({
-                                        ...localFilters,
-                                        isOpen: e.target.checked
-                                    })}
-                                    className="w-5 h-5 text-blue-600"
-                                />
-                            </label>
-                        </div>
+                            }
+                        </FilterSectionWrapper>
                     </div>
 
                     {/* 푸터 */}

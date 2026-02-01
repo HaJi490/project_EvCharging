@@ -23,8 +23,8 @@ export default function StationListPanel({
   isLoading
 }:StationListProps) {
   return (
-    <div className='w-full h-full flex-shrink-0 flex flex-col bg-gray-50'>
-        <div className='w-full h-16 flex-shrink-0 border-b border-gray-200 '>
+    <div className='w-full h-full shrink-0 flex flex-col bg-gray-50'>
+        <div className='w-full h-16 shrink-0 border-b border-gray-200 '>
             <StationSearch 
               onFilterChange={onFilterChange}
               currentFilter={currentFilter}
